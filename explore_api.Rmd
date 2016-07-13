@@ -1,0 +1,75 @@
+---
+title: "Explore Spotify API"
+output: html_notebook
+---
+# setup 
+```{r}
+setwd("D:/Datascience/spotify")
+library(dplyr)
+library(tidyr)
+library(httr)
+library(lubridate)
+library(readr)
+```
+
+#connect to API
+```{r, warning=FALSE}
+api_info <- scan("api_info.txt", "character")
+
+clientID <- api_info[2]
+clientSecret <- api_info[4]
+
+response = POST("https://accounts.spotify.com/api/token", 
+                accept_json(),
+                authenticate(clientID, clientSecret),
+                body=list(grant_type="client_credentials"), 
+                encode="form", 
+                verbose()
+)
+
+mytoken <- content(response)$access_token
+
+```
+
+#get artist info on the red hot chili peppers
+```{r}
+auth <- paste0("Bearer ", mytoken)
+rhcp.id <- "0L8ExT028jH3ddEcZwqJJ5"
+
+GET.spotify <- function(url, Authorization){
+  args <- list(url=url,
+               config=add_headers(Authorization=Authorization))
+  out <- do.call(GET, args=args)
+  return(out)
+}
+url <- paste0("https://api.spotify.com/v1/artists/", rhcp.id)
+rhcp <- GET.spotify(url, auth)
+names(rhcp)
+content(rhcp)$followers
+```
+#get country codes to request toptracks
+```{r}
+country <- read_csv("https://commondatastorage.googleapis.com/ckannet-storage/2011-11-25T132653/iso_3166_2_countries.csv")
+names(country) <- gsub(" ", "", names(country))
+names(country)
+```
+
+```{r}
+country <- country %>% select(CommonName, `ISO3166-12LetterCode`)
+names(country) <- c("Name", "ISO_Code")
+country
+save(country, "data/countries.rda")
+```
+#get example data for top tracks in CH
+```{r}
+baseurl <- "https://api.spotify.com/v1/"
+url <- paste0(baseurl, "artists/", rhcp.id, "/top-tracks?country=CH")
+rhcp.tt <- GET.spotify(url, auth)
+cont <- content(rhcp.tt)
+cont$tracks[1]
+```
+
+```{r}
+
+```
+
