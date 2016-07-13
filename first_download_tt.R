@@ -14,7 +14,7 @@ api_info <- scan("api_info.txt", "character")
 clientID <- api_info[2]
 clientSecret <- api_info[4]
 
-#authenticate function
+#Authenticate and get token
 auth.token <- function(ClientID, clientSecret){
   response = POST("https://accounts.spotify.com/api/token", 
                 accept_json(),
@@ -28,7 +28,6 @@ auth.token <- function(ClientID, clientSecret){
   return(mytoken)
 }
 
-#get token
 auth <- paste0("Bearer ", auth.token(ClientID, clientSecret)
 
 #baseurl               
