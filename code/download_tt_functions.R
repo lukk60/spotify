@@ -36,6 +36,7 @@ spotify.get.tt <- function(url, Authorization){
     out$country <- rep(substr(url, nchar(url)-1, nchar(url)), nrow(out))
     
     #return data frame
+    cat("Download successfull: ", out[1,c(1,5,7)], "\n")
     return(out)
   }
 }
