@@ -59,4 +59,14 @@ tt.na <- unlist(lapply(tt.df, FUN=function(x) dim(x)[1]>1)) #excluse countries w
 tt <- rbind_all(tt[tt.na])
 
 #-------------------------------save data-------------------------------------
-save(tt, file=paste0("data/toptracks/", gsub(":","-",now()), ".rda"))
+write.csv(tt, file=paste0("data/toptracks/", gsub(":","-",now()), ".csv"), row.names = F)
+
+#-------------------------------remove non existing countries from url list
+load("data/toptracks/2016-07-12 22-02-09.rda")
+country_sel <- intersect(tt$country, country$ISO_Code)
+urls <- expand.grid(artists$url, country_sel)
+urls <- paste0(urls$Var1, urls$Var2)
+
+save(urls, file="data/urls.rda")
+
+rm(list=ls())

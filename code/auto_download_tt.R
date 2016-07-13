@@ -16,10 +16,12 @@ auth <- auth.spotify("api_info.txt")
 load("data/urls.rda")
 
 #---------------------------------Request data and extract information----------
-tt <- sapply(urls, FUN=spotify.get.tt, Authorization=auth)
+tt <- lapply(urls, FUN=spotify.get.tt, Authorization=auth)
 tt <- lapply(tt, FUN=data.frame)
-tt.na <- unlist(lapply(tt.df, FUN=function(x) dim(x)[1]>1)) #excluse countries with no info available
+tt.na <- unlist(lapply(tt, FUN=function(x) dim(x)[1]>1)) #exclude countries with no info available
+table(tt.na)
+
 tt <- rbind_all(tt[tt.na])
 
 #---------------------------------save file-------------------------------------
-save(tt, file=paste0("data/toptracks/", gsub(":","-",now()), ".rda"))
+write.csv(tt, file=paste0("data/toptracks/", gsub(":","-",now()), ".csv"), row.names = F)
