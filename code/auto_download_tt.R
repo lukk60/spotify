@@ -25,3 +25,8 @@ tt <- rbind_all(tt[tt.na])
 
 #---------------------------------save file-------------------------------------
 write.csv(tt, file=paste0("data/toptracks/", gsub(":","-",now()), ".csv"), row.names = F)
+
+
+
+#clean up
+rm(list=ls())
