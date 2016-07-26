@@ -1,0 +1,48 @@
+---
+title: "Spotify Artist/Track Popularity Data EDA"
+output: html_notebook
+---
+
+##Setup
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
+library(lubridate)
+```
+
+##load data
+```{r}
+files <- dir("data/toptracks")
+dat <- data_frame(date=character(), 
+                  track.name=character(), 
+                  track.uri=character(), 
+                  popularity=integer(), 
+                  artist.name=character(), 
+                  artist.uri=character(), 
+                  country=character())
+for(f in files){
+  d <- read_csv(paste0("data/toptracks/",f))
+  dat <- rbind(dat,d)
+}
+
+summary(dat)
+glimpse(dat)
+rm(d);rm(f)
+```
+##check for NAs and timestamp errors
+```{r}
+sapply(dat, FUN=function(x){sum(is.na(x))})
+table(day(dat$date))
+qplot(date, data=dat)
+qplot(popularity, data=dat)
+```
+
+##how does popularity vary over time?
+```{r}
+tmp <- dat %>% filter(country=="CH") %>% group_by(artist.name) %>% mutate(artist.popularity=mean(popularity)) 
+p <- tmp %>% ggplot(aes(x=date, y=popularity, group=track.name, color=artist.name)) 
+p + geom_line() + geom_point(size=1) + facet_wrap(~artist.name) + theme(legend.position="none")
+```
+the popularity of most tracks doesent vary at all.
