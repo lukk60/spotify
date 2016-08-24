@@ -1,6 +1,8 @@
 ---
 title: "Spotify Artist/Track Popularity Data EDA"
-output: html_notebook
+output:
+  html_document: default
+  html_notebook: default
 ---
 
 ##Setup
@@ -39,10 +41,18 @@ qplot(date, data=dat)
 qplot(popularity, data=dat)
 ```
 
-##how does popularity vary over time?
+##how does popularity in Switzerland vary over time?
 ```{r}
-tmp <- dat %>% filter(country=="CH") %>% group_by(artist.name) %>% mutate(artist.popularity=mean(popularity)) 
-p <- tmp %>% ggplot(aes(x=date, y=popularity, group=track.name, color=artist.name)) 
+tmp_ch <- dat %>% filter(country=="CH") %>% group_by(artist.name) %>% mutate(artist.popularity=mean(popularity)) 
+p <- tmp_ch %>% ggplot(aes(x=date, y=popularity, group=track.name, color=artist.name)) 
 p + geom_line() + geom_point(size=1) + facet_wrap(~artist.name) + theme(legend.position="none")
 ```
-the popularity of most tracks doesent vary at all.
+
+
+##what about Germany?
+```{r}
+tmp_de <- dat %>% filter(country=="DE") %>% group_by(artist.name) %>% mutate(artist.popularity=mean(popularity)) 
+p <- tmp_de %>% ggplot(aes(x=date, y=popularity, group=track.name, color=artist.name)) 
+p + geom_line() + geom_point(size=1) + facet_wrap(~artist.name) + theme(legend.position="none")
+
+```
