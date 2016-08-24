@@ -1,6 +1,6 @@
 # Script that can be called by Task Scheduler to download top track data 
 #---------------------------------Setup Workspace------------------------------
-cat("Start Script:", now())
+cat("Start Script:", date())
 setwd("D:/Datascience/spotify")
 
 library(readr)
@@ -30,4 +30,4 @@ write.csv(tt, file=paste0("data/toptracks/", gsub(":","-",now()), ".csv"), row.n
 #clean up
 rm(list=ls())
 
-cat("End Script:", now())
+cat("End Script:", date())
